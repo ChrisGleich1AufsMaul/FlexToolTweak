@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      THEOS: ${{ github.workspace }}/theos
+      THEOS: ${{ runner.temp }}/theos
 
     steps:
       - name: Checkout repository
@@ -19,12 +19,8 @@ jobs:
       - name: Install Theos
         run: |
           set -euo pipefail
-          if [ -e "$THEOS" ] && [ ! -d "$THEOS" ]; then
-            rm -f "$THEOS"
-          fi
-          if [ ! -d "$THEOS" ]; then
-            git clone --recursive https://github.com/theos/theos "$THEOS"
-          fi
+          rm -rf "$THEOS"
+          git clone --recursive https://github.com/theos/theos "$THEOS"
           echo "THEOS=$THEOS" >> "$GITHUB_ENV"
 
       - name: Prepare FLEX sources

@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      THEOS: ${{ runner.temp }}/theos
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,9 +16,10 @@ jobs:
       - name: Install Theos
         run: |
           set -euo pipefail
-          rm -rf "$THEOS"
-          git clone --recursive https://github.com/theos/theos "$THEOS"
-          echo "THEOS=$THEOS" >> "$GITHUB_ENV"
+          THEOS_DIR="${RUNNER_TEMP:-/tmp}/theos"
+          rm -rf "$THEOS_DIR"
+          git clone --recursive https://github.com/theos/theos "$THEOS_DIR"
+          echo "THEOS=$THEOS_DIR" >> "$GITHUB_ENV"
 
       - name: Prepare FLEX sources
         run: |

@@ -1,0 +1,40 @@
+name: Build FlexTool dylib
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Theos
+        uses: Randomblock1/theos-action@v1
+
+      - name: Prepare FLEX sources
+        run: |
+          mkdir -p temp
+          find FLEX -type f -name '*.h' -exec cp {} temp \;
+          find FLEX -type f -name '*.m' -exec cp {} temp \;
+
+      - name: Build tweak
+        run: make clean package FINALPACKAGE=1
+
+      - name: Collect dylib artifact
+        run: |
+          mkdir -p artifacts
+          find .theos/obj -type f -name '*.dylib' -exec cp {} artifacts/ \;
+          ls -la artifacts
+
+      - name: Upload dylib artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlexTool-dylib
+          path: artifacts/*.dylib
+          if-no-files-found: error

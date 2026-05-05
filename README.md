@@ -59,6 +59,15 @@ You can now inject Flex library in any application on the Springboard to inspect
 	via Cydia in "Installed" section
 
 
+
+### GitHub Actions (.dylib)
+
+Dieses Repository enthält einen GitHub-Workflow unter `.github/workflows/build-dylib.yml`,
+der den Tweak mit Theos baut und die erzeugte `FlexTool.dylib` als Artifact hochlädt.
+
+- Workflow manuell starten: **Actions -> Build FlexTool dylib -> Run workflow**
+- Ergebnis herunterladen: Artifact **FlexTool-dylib**
+
 Build
 -----
 

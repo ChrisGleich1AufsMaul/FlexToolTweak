@@ -21,6 +21,13 @@ jobs:
           git clone --recursive https://github.com/theos/theos "$THEOS_DIR"
           echo "THEOS=$THEOS_DIR" >> "$GITHUB_ENV"
 
+
+      - name: Install iOS SDKs for Theos
+        run: |
+          set -euo pipefail
+          rm -rf "$THEOS/sdks"
+          git clone --depth 1 https://github.com/theos/sdks "$THEOS/sdks"
+
       - name: Prepare FLEX sources
         run: |
           mkdir -p temp

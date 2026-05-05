@@ -9,13 +9,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      THEOS: ${{ github.workspace }}/theos
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install Theos
-        uses: Randomblock1/theos-action@v1
+        run: |
+          set -euo pipefail
+          if [ -e "$THEOS" ] && [ ! -d "$THEOS" ]; then
+            rm -f "$THEOS"
+          fi
+          if [ ! -d "$THEOS" ]; then
+            git clone --recursive https://github.com/theos/theos "$THEOS"
+          fi
+          echo "THEOS=$THEOS" >> "$GITHUB_ENV"
 
       - name: Prepare FLEX sources
         run: |

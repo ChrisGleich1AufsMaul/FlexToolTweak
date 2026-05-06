@@ -9,24 +9,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      THEOS: ${{ github.workspace }}/theos
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Theos
-        run: |
-          set -euo pipefail
-          THEOS_DIR="${RUNNER_TEMP:-/tmp}/theos"
-          rm -rf "$THEOS_DIR"
-          git clone --recursive https://github.com/theos/theos "$THEOS_DIR"
-          echo "THEOS=$THEOS_DIR" >> "$GITHUB_ENV"
+      - name: Clean previous Theos path
+        run: rm -rf "$THEOS"
 
-
-      - name: Install iOS SDKs for Theos
-        run: |
-          set -euo pipefail
-          rm -rf "$THEOS/sdks"
-          git clone --depth 1 https://github.com/theos/sdks "$THEOS/sdks"
+      - name: Install Theos toolchain
+        uses: Randomblock1/theos-action@v1
 
       - name: Prepare FLEX sources
         run: |

@@ -2,7 +2,8 @@ include $(THEOS)/makefiles/common.mk
 
 ADDITIONAL_CFLAGS = -fobjc-arc -Os -Qunused-arguments -Itemp -Wno-c++11-extensions -Xclang -fobjc-runtime-has-weak
 
-TARGET_IPHONEOS_DEPLOYMENT_VERSION = 12.0
+TARGET = iphone:clang:latest:26.0
+TARGET_IPHONEOS_DEPLOYMENT_VERSION = 15.0
 TWEAK_NAME = FlexTool
 
 # find ./FLEX -name \*.m -print | grep Classes | rev | cut -d"/" -f1 | rev | sed -e "s/^/temp\//" | tr "\\n" " "

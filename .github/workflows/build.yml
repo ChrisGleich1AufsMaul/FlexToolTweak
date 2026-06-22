@@ -1,0 +1,42 @@
+name: Build FlexTool
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Theos dependencies
+        run: |
+          brew install ldid make
+
+      - name: Set up Theos
+        run: |
+          git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+      - name: Build rootless package
+        run: |
+          make clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+
+      - name: Build LiveContainer dylib
+        run: |
+          make clean FlexToolLC
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p output
+          find packages -name "*.deb" -exec cp {} output/ \;
+          find .theos -name "*.dylib" -exec cp {} output/ \;
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flextool-builds
+          path: output/

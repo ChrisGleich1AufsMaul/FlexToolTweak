@@ -54,7 +54,6 @@ FlexTool_CFLAGS := \
     $(FLEX_INCLUDES)
 
 FlexTool_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO
-FlexTool_PRIVATE_FRAMEWORKS := FrontBoardServices
 FlexTool_LDFLAGS := -ObjC -lz -lsqlite3
 FlexTool_LIBRARIES := substrate
 

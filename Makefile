@@ -20,7 +20,10 @@ FLEX_INCLUDES := \
   -Ivendor/FLEX/Classes/Manager \
   -Ivendor/FLEX/Classes/Utility \
   -Ivendor/FLEX/Classes/Utility/Categories \
-  -Ivendor/FLEX/Classes/Utility/Categories/Private
+  -Ivendor/FLEX/Classes/Utility/Categories/Private \
+  -Ivendor/FLEX/Classes/Utility/Runtime \
+  -Ivendor/FLEX/Classes/Utility/Runtime/Objc \
+  -Ivendor/FLEX/Classes/Utility/Runtime/Objc/Reflection
 
 FLEX_OBJC_SOURCES := \
   vendor/FLEX/Classes/Core/FLEXSingleRowSection.m \

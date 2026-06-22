@@ -21,10 +21,8 @@ include $(THEOS)/makefiles/common.mk
 # MARK: - FLEX Include-Pfade
 # ─────────────────────────────────────────────
 
-FLEX_DIR := vendor/FLEX/Classes
-
 FLEX_INCLUDES := $(shell find vendor/FLEX/Classes -type d | sed 's/^/-I/')
-
+FLEX_SOURCES := $(shell find vendor/FLEX/Classes -name "*.m" 2>/dev/null)
 
 # ─────────────────────────────────────────────
 # MARK: - Rootless Tweak Target
@@ -32,37 +30,31 @@ FLEX_INCLUDES := $(shell find vendor/FLEX/Classes -type d | sed 's/^/-I/')
 
 TWEAK_NAME := FlexTool
 
+# Nur eigene Quelldateien – ohne FLEX
 FlexTool_FILES := \
-	Sources/Tweak.xm \
-	Sources/FTCore.m \
-	Sources/FTPreferences.m \
-	Sources/FLEXBridge.m
+    Sources/Tweak.xm \
+    Sources/FTCore.m \
+    Sources/FTSceneMonitor.m \
+    Sources/FTPreferences.m \
+    Sources/FLEXBridge.m
 
-# FLEX-Quellen automatisch einsammeln
-FlexTool_FILES += $(shell find vendor/FLEX/Classes -name "*.m" 2>/dev/null)
+# FLEX separat mit lockeren Flags
+FlexTool_FILES += $(FLEX_SOURCES)
 
+# Strenge Flags nur für eigenen Code
 FlexTool_CFLAGS := \
-	-fobjc-arc \
-	-Wall \
-	-Wextra \
-	-Wno-unused-parameter \
-	-Wno-deprecated-declarations \
-	$(FLEX_INCLUDES)
+    -fobjc-arc \
+    -Wall \
+    -Wno-unused-parameter \
+    -Wno-deprecated-declarations \
+    -Wno-sign-compare \
+    -Wno-shorten-64-to-32 \
+    $(FLEX_INCLUDES)
 
-FlexTool_FRAMEWORKS := \
-	UIKit \
-	Foundation \
-	QuartzCore \
-	CoreGraphics \
-	ImageIO
-
-FlexTool_LDFLAGS := \
-	-ObjC \
-	-lz \
-	-lsqlite3
-
+FlexTool_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO
+FlexTool_PRIVATE_FRAMEWORKS := FrontBoardServices
+FlexTool_LDFLAGS := -ObjC -lz -lsqlite3
 FlexTool_LIBRARIES := substrate
-
 
 # ─────────────────────────────────────────────
 # MARK: - LiveContainer Dylib Target
@@ -71,35 +63,25 @@ FlexTool_LIBRARIES := substrate
 LIBRARY_NAME := FlexToolLC
 
 FlexToolLC_FILES := \
-	Sources/LiveContainerEntry.m \
-	Sources/FTCore.m \
-	Sources/FTPreferences.m \
-	Sources/FLEXBridge.m
+    Sources/LiveContainerEntry.m \
+    Sources/FTCore.m \
+    Sources/FTSceneMonitor.m \
+    Sources/FTPreferences.m \
+    Sources/FLEXBridge.m
 
-# FLEX-Quellen – dieselben wie beim Tweak
-FlexToolLC_FILES += $(shell find vendor/FLEX/Classes -name "*.m" 2>/dev/null)
+FlexToolLC_FILES += $(FLEX_SOURCES)
 
 FlexToolLC_CFLAGS := \
-	-fobjc-arc \
-	-Wall \
-	-Wextra \
-	-Wno-unused-parameter \
-	-Wno-deprecated-declarations \
-	$(FLEX_INCLUDES)
+    -fobjc-arc \
+    -Wall \
+    -Wno-unused-parameter \
+    -Wno-deprecated-declarations \
+    -Wno-sign-compare \
+    -Wno-shorten-64-to-32 \
+    $(FLEX_INCLUDES)
 
-FlexToolLC_FRAMEWORKS := \
-	UIKit \
-	Foundation \
-	QuartzCore \
-	CoreGraphics \
-	ImageIO
-
-FlexToolLC_LDFLAGS := \
-	-ObjC \
-	-lz \
-	-lsqlite3
-
-# Kein Substrate – LiveContainer braucht keinen Jailbreak-Loader
+FlexToolLC_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO
+FlexToolLC_LDFLAGS := -ObjC -lz -lsqlite3
 FlexToolLC_INSTALL_PATH := /usr/lib
 
 

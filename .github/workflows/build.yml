@@ -60,32 +60,24 @@ jobs:
             $HOME/theos/sdks
 
       # ─────────────────────────────────────────
-      # 7. LiveContainer .dylib bauen
+      # 7. Rootless .deb bauen
+      # ─────────────────────────────────────────
+      - name: Build rootless .deb
+        run: |
+          make package \
+            FINALPACKAGE=1 \
+            THEOS_PACKAGE_SCHEME=rootless \
+            ARCHS="arm64 arm64e"
+
+      # ─────────────────────────────────────────
+      # 8. LiveContainer .dylib bauen
       # ─────────────────────────────────────────
       - name: Build LiveContainer .dylib
         run: |
           make FlexToolLC \
             THEOS_PACKAGE_SCHEME=rootless \
             ARCHS="arm64 arm64e"
-
-      # ─────────────────────────────────────────
-      # 8. Artefakte einsammeln
-      # ─────────────────────────────────────────
-      - name: Collect artifacts
-        run: |
-          mkdir -p output
-
-          # Rootless .deb
-          find packages -name "*.deb" \
-            -exec cp {} output/ \;
-
-          # LiveContainer .dylib
-          find .theos/obj -name "FlexToolLC.dylib" \
-            -exec cp {} output/ \;
-
-          echo "── Gebaute Artefakte ──"
-          ls -lh output/
-
+            
       # ─────────────────────────────────────────
       # 9. Artefakte hochladen
       # ─────────────────────────────────────────

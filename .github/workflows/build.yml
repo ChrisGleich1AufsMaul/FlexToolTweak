@@ -45,9 +45,14 @@ jobs:
       # ─────────────────────────────────────────
       - name: Download Theos SDKs
         run: |
-          git clone --depth=1 \
-            https://github.com/theos/sdks.git \
-            $HOME/theos/sdks
+          if [ ! "$(ls -A $HOME/theos/sdks)" ]; then
+            git clone --depth=1 \
+              https://github.com/theos/sdks.git \
+              $HOME/theos/sdks
+          else
+            echo "SDKs already present, updating..."
+            git -C $HOME/theos/sdks pull --depth=1
+          fi
 
       # ─────────────────────────────────────────
       # 5. FLEX Submodul sicherstellen

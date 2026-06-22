@@ -23,17 +23,7 @@ include $(THEOS)/makefiles/common.mk
 
 FLEX_DIR := vendor/FLEX/Classes
 
-FLEX_INCLUDES := \
-	-I$(FLEX_DIR) \
-	-I$(FLEX_DIR)/Manager \
-	-I$(FLEX_DIR)/Toolbar \
-	-I$(FLEX_DIR)/Utility \
-	-I$(FLEX_DIR)/Network \
-	-I$(FLEX_DIR)/ObjectExplorers \
-	-I$(FLEX_DIR)/GlobalStateExplorers \
-	-I$(FLEX_DIR)/ExplorerInterface \
-	-I$(FLEX_DIR)/Editing \
-	-I$(FLEX_DIR)/ViewHierarchy
+FLEX_INCLUDES := $(shell find vendor/FLEX/Classes -type d | sed 's/^/-I/')
 
 
 # ─────────────────────────────────────────────

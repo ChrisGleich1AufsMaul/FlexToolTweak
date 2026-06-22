@@ -16,12 +16,19 @@ FLEX_OBJC_SOURCES := $(FLEX_M_SOURCES) $(FLEX_MM_SOURCES)
 # Exclude optional/problematic modules for first stable build
 FLEX_OBJC_SOURCES := $(filter-out %FLEXFirebaseTransaction.mm,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXNetworkRecorder.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXNetworkSettingsController.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXNetworkMITMViewController.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXHTTPTransactionDetailController.m,$(FLEX_OBJC_SOURCES))
+
 FLEX_OBJC_SOURCES := $(filter-out %FLEXSystemLogViewController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXGlobalsViewController.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXTabsViewController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogMessage.m,$(FLEX_OBJC_SOURCES))
+
 FLEX_OBJC_SOURCES := $(filter-out %FLEXSwiftInternal.mm,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXObjectExplorer.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXShortcutsSection.m,$(FLEX_OBJC_SOURCES))
 
 # Optional fishhook support if present
 FLEX_FISHHOOK_SOURCES := $(shell find vendor/fishhook -type f -name "fishhook.c" 2>/dev/null)

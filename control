@@ -2,8 +2,14 @@ Package: com.pba.flextool
 Name: FlexTool
 Version: 1.0.0
 Architecture: iphoneos-arm64
-Depends: firmware (>= 15.0), preferenceloader, applist, ellekit
 Section: Development
+Priority: optional
+Depends: firmware (>= 15.0), ellekit | libhooker | substitute, preferenceloader, applist
+Recommends: preferenceloader
+Description: FLEX-based runtime inspector for UIKit and SwiftUI apps.
+ Supports rootless jailbreaks, arm64/arm64e, multi-scene
+ and is compatible with LiveContainer for jailbreak-free use.
 Maintainer: Paul Bancarel <pspol@hotmail.fr>
 Author: Paul Bancarel <pspol@hotmail.fr>
-Description: FLEX-based runtime inspector for apps, modernized for rootless iOS and LiveContainer workflows.
+Homepage: https://github.com/ChrisGleich1AufsMaul/FlexToolTweak
+Tag: role::developer

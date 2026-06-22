@@ -59,14 +59,14 @@ jobs:
           fi
 
       # ─────────────────────────────────────────
-      # 6. Rootless .deb bauen
+      # 6. Theos SDKs herunterladen
       # ─────────────────────────────────────────
-      - name: Build rootless .deb
+      - name: Download Theos SDKs
         run: |
-          make clean package \
-            FINALPACKAGE=1 \
-            THEOS_PACKAGE_SCHEME=rootless \
-            ARCHS="arm64 arm64e"
+          rm -rf $HOME/theos/sdks
+          git clone --depth=1 \
+            https://github.com/theos/sdks.git \
+            $HOME/theos/sdks
 
       # ─────────────────────────────────────────
       # 7. LiveContainer .dylib bauen

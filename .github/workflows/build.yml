@@ -41,15 +41,6 @@ jobs:
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
       # ─────────────────────────────────────────
-      # 4. Theos SDK herunterladen
-      # ─────────────────────────────────────────
-      - name: Download Theos SDKs
-        run: |
-          git clone --depth=1 \
-            https://github.com/theos/sdks.git \
-            $HOME/theos/sdks
-
-      # ─────────────────────────────────────────
       # 5. FLEX Submodul sicherstellen
       # ─────────────────────────────────────────
       - name: Ensure FLEX submodule

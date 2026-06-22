@@ -11,13 +11,17 @@ FLEX_INCLUDES := $(shell find vendor/FLEX/Classes -type d | sed 's/^/-I/')
 # FLEX sources
 FLEX_OBJC_SOURCES := $(shell find vendor/FLEX/Classes -type f \( -name "*.m" -o -name "*.mm" \) 2>/dev/null)
 
-# Optional/problematic modules excluded for first stable build
+# Exclude optional/problematic modules for first stable build
 FLEX_OBJC_SOURCES := $(filter-out %FLEXFirebaseTransaction.mm,$(FLEX_OBJC_SOURCES))
-FLEX_OBJC_SOURCES := $(filter-out %Firebase%,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXNetworkRecorder.m,$(FLEX_OBJC_SOURCES))
+
 FLEX_OBJC_SOURCES := $(filter-out %FLEXSystemLogViewController.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXGlobalsViewController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogMessage.m,$(FLEX_OBJC_SOURCES))
+
 FLEX_OBJC_SOURCES := $(filter-out %FLEXSwiftInternal.mm,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXObjectExplorer.m,$(FLEX_OBJC_SOURCES))))
 
 # Optional fishhook support if present
 FLEX_FISHHOOK_SOURCES := $(shell find vendor/fishhook -type f -name "fishhook.c" 2>/dev/null)

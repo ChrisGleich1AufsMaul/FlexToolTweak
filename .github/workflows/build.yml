@@ -29,8 +29,10 @@ jobs:
       - name: Ensure FLEX submodule
         run: |
           git submodule update --init --recursive
-          echo "FLEX Classes vorhanden:"
-          ls vendor/FLEX/Classes/
+          echo "── FLEX Verzeichnisstruktur ──"
+          ls vendor/FLEX/
+          echo "── FLEXManager.h suchen ──"
+          find vendor/FLEX -name "FLEXManager.h" 2>/dev/null || echo "Nicht gefunden"
 
       # ─────────────────────────────────────────
       # 3. Debug FLEX Struktur

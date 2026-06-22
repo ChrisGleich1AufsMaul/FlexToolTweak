@@ -49,6 +49,8 @@ FlexTool_CFLAGS := \
     -Wno-deprecated-declarations \
     -Wno-sign-compare \
     -Wno-shorten-64-to-32 \
+    -Wno-unsupported-availability-guard \
+    -Wno-error \
     $(FLEX_INCLUDES)
 
 FlexTool_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO
@@ -78,6 +80,8 @@ FlexToolLC_CFLAGS := \
     -Wno-deprecated-declarations \
     -Wno-sign-compare \
     -Wno-shorten-64-to-32 \
+    -Wno-unsupported-availability-guard \
+    -Wno-error \
     $(FLEX_INCLUDES)
 
 FlexToolLC_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO

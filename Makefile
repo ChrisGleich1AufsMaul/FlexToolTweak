@@ -17,6 +17,7 @@ FLEX_OBJC_SOURCES := $(filter-out %Firebase%,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXSystemLogViewController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogController.m,$(FLEX_OBJC_SOURCES))
 FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogMessage.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXSwiftInternal.mm,$(FLEX_OBJC_SOURCES))
 
 # Optional fishhook support if present
 FLEX_FISHHOOK_SOURCES := $(shell find vendor/fishhook -type f -name "fishhook.c" 2>/dev/null)

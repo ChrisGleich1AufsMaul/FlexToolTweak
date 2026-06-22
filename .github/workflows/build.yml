@@ -14,6 +14,10 @@ jobs:
 
     steps:
 
+      - name: Debug FLEX structure
+        run: |
+          find vendor/FLEX/Classes -name "FLEXManager.h"
+
       # ─────────────────────────────────────────
       # 1. Repository auschecken
       # ─────────────────────────────────────────

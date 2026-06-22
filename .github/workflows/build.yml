@@ -14,28 +14,40 @@ jobs:
 
     steps:
 
-      - name: Debug FLEX structure
-        run: |
-          find vendor/FLEX/Classes -name "FLEXManager.h"
-
       # ─────────────────────────────────────────
-      # 1. Repository auschecken
+      # 1. Repository auschecken (MUSS zuerst)
       # ─────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-          
+
       # ─────────────────────────────────────────
-      # 2. Abhängigkeiten installieren
+      # 2. FLEX Submodul sicherstellen
+      # ─────────────────────────────────────────
+      - name: Ensure FLEX submodule
+        run: |
+          git submodule update --init --recursive
+          echo "FLEX Classes vorhanden:"
+          ls vendor/FLEX/Classes/
+
+      # ─────────────────────────────────────────
+      # 3. Debug FLEX Struktur
+      # ─────────────────────────────────────────
+      - name: Debug FLEX structure
+        run: |
+          find vendor/FLEX/Classes -name "FLEXManager.h"
+
+      # ─────────────────────────────────────────
+      # 4. Abhängigkeiten installieren
       # ─────────────────────────────────────────
       - name: Install dependencies
         run: |
           brew install ldid make xz dpkg
 
       # ─────────────────────────────────────────
-      # 3. Theos einrichten
+      # 5. Theos einrichten
       # ─────────────────────────────────────────
       - name: Set up Theos
         run: |
@@ -44,32 +56,19 @@ jobs:
             $HOME/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
-          
+
       # ─────────────────────────────────────────
-      # 4. Theos SDK herunterladen
+      # 6. Theos SDKs herunterladen
       # ─────────────────────────────────────────
       - name: Download Theos SDKs
         run: |
-          if [ ! "$(ls -A $HOME/theos/sdks)" ]; then
-            git clone --depth=1 \
-              https://github.com/theos/sdks.git \
-              $HOME/theos/sdks
-          else
-            echo "SDKs already present, updating..."
-            git -C $HOME/theos/sdks pull --depth=1
-          fi
+          rm -rf $HOME/theos/sdks
+          git clone --depth=1 \
+            https://github.com/theos/sdks.git \
+            $HOME/theos/sdks
 
       # ─────────────────────────────────────────
-      # 5. FLEX Submodul sicherstellen
-      # ─────────────────────────────────────────
-      - name: Ensure FLEX submodule
-        run: |
-          if [ ! -d "vendor/FLEX/Classes" ]; then
-            git submodule update --init --recursive
-          fi
-
-      # ─────────────────────────────────────────
-      # 6. Rootless .deb bauen
+      # 7. Rootless .deb bauen
       # ─────────────────────────────────────────
       - name: Build rootless .deb
         run: |
@@ -79,7 +78,7 @@ jobs:
             ARCHS="arm64 arm64e"
 
       # ─────────────────────────────────────────
-      # 7. LiveContainer .dylib bauen
+      # 8. LiveContainer .dylib bauen
       # ─────────────────────────────────────────
       - name: Build LiveContainer .dylib
         run: |
@@ -88,25 +87,20 @@ jobs:
             ARCHS="arm64 arm64e"
 
       # ─────────────────────────────────────────
-      # 8. Artefakte einsammeln
+      # 9. Artefakte einsammeln
       # ─────────────────────────────────────────
       - name: Collect artifacts
         run: |
           mkdir -p output
-
-          # Rootless .deb
           find packages -name "*.deb" \
             -exec cp {} output/ \;
-
-          # LiveContainer .dylib
           find .theos/obj -name "FlexToolLC.dylib" \
             -exec cp {} output/ \;
-
           echo "── Gebaute Artefakte ──"
           ls -lh output/
 
       # ─────────────────────────────────────────
-      # 9. Artefakte hochladen
+      # 10. Artefakte hochladen
       # ─────────────────────────────────────────
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -116,7 +110,7 @@ jobs:
           retention-days: 30
 
       # ─────────────────────────────────────────
-      # 10. Release erstellen (nur bei Tags)
+      # 11. Release erstellen (nur bei Tags)
       # ─────────────────────────────────────────
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v')

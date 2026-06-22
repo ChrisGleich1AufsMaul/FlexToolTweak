@@ -22,24 +22,25 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-
+          
       # ─────────────────────────────────────────
       # 2. Abhängigkeiten installieren
       # ─────────────────────────────────────────
       - name: Install dependencies
         run: |
-          brew install ldid make xz
+          brew install ldid make xz dpkg
 
       # ─────────────────────────────────────────
       # 3. Theos einrichten
       # ─────────────────────────────────────────
       - name: Set up Theos
         run: |
-          git clone --depth=1 \
+          git clone --recursive --depth=1 \
             https://github.com/theos/theos.git \
             $HOME/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
-
+          echo "PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
+          
       # ─────────────────────────────────────────
       # 4. Theos SDK herunterladen
       # ─────────────────────────────────────────

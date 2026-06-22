@@ -2,41 +2,117 @@ name: Build FlexTool
 
 on:
   push:
+    branches: [ main, master ]
   pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
+    name: Build Rootless .deb + LiveContainer .dylib
     runs-on: macos-14
+
     steps:
-      - uses: actions/checkout@v4
+
+      # ─────────────────────────────────────────
+      # 1. Repository auschecken
+      # ─────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 0
 
-      - name: Install Theos dependencies
+      # ─────────────────────────────────────────
+      # 2. Abhängigkeiten installieren
+      # ─────────────────────────────────────────
+      - name: Install dependencies
         run: |
-          brew install ldid make
+          brew install ldid make xz
 
+      # ─────────────────────────────────────────
+      # 3. Theos einrichten
+      # ─────────────────────────────────────────
       - name: Set up Theos
         run: |
-          git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+          git clone --depth=1 \
+            https://github.com/theos/theos.git \
+            $HOME/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
-      - name: Build rootless package
+      # ─────────────────────────────────────────
+      # 4. Theos SDK herunterladen
+      # ─────────────────────────────────────────
+      - name: Download Theos SDKs
         run: |
-          make clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+          git clone --depth=1 \
+            https://github.com/theos/sdks.git \
+            $HOME/theos/sdks
 
-      - name: Build LiveContainer dylib
+      # ─────────────────────────────────────────
+      # 5. FLEX Submodul sicherstellen
+      # ─────────────────────────────────────────
+      - name: Ensure FLEX submodule
         run: |
-          make clean FlexToolLC
+          if [ ! -d "vendor/FLEX/Classes" ]; then
+            git submodule update --init --recursive
+          fi
 
+      # ─────────────────────────────────────────
+      # 6. Rootless .deb bauen
+      # ─────────────────────────────────────────
+      - name: Build rootless .deb
+        run: |
+          make clean package \
+            FINALPACKAGE=1 \
+            THEOS_PACKAGE_SCHEME=rootless \
+            ARCHS="arm64 arm64e"
+
+      # ─────────────────────────────────────────
+      # 7. LiveContainer .dylib bauen
+      # ─────────────────────────────────────────
+      - name: Build LiveContainer .dylib
+        run: |
+          make FlexToolLC \
+            THEOS_PACKAGE_SCHEME=rootless \
+            ARCHS="arm64 arm64e"
+
+      # ─────────────────────────────────────────
+      # 8. Artefakte einsammeln
+      # ─────────────────────────────────────────
       - name: Collect artifacts
         run: |
           mkdir -p output
-          find packages -name "*.deb" -exec cp {} output/ \;
-          find .theos -name "*.dylib" -exec cp {} output/ \;
 
-      - uses: actions/upload-artifact@v4
+          # Rootless .deb
+          find packages -name "*.deb" \
+            -exec cp {} output/ \;
+
+          # LiveContainer .dylib
+          find .theos/obj -name "FlexToolLC.dylib" \
+            -exec cp {} output/ \;
+
+          echo "── Gebaute Artefakte ──"
+          ls -lh output/
+
+      # ─────────────────────────────────────────
+      # 9. Artefakte hochladen
+      # ─────────────────────────────────────────
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: flextool-builds
+          name: flextool-${{ github.sha }}
           path: output/
+          retention-days: 30
+
+      # ─────────────────────────────────────────
+      # 10. Release erstellen (nur bei Tags)
+      # ─────────────────────────────────────────
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: output/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -21,8 +21,24 @@ include $(THEOS)/makefiles/common.mk
 # MARK: - FLEX Include-Pfade
 # ─────────────────────────────────────────────
 
-FLEX_INCLUDES := $(shell find vendor/FLEX/Classes -type d | sed 's/^/-I/')
-FLEX_SOURCES := $(shell find vendor/FLEX/Classes -name "*.m" 2>/dev/null)
+# Alle Header-Suchpfade unter FLEX
+FLEX_INCLUDES := $(shell find vendor/FLEX -type d | sed 's/^/-I/')
+
+FLEX_OBJC_SOURCES := $(shell find vendor/FLEX/Classes \( -name "*.m" -o -name "*.mm" \) 2>/dev/null)
+
+# Firebase vorerst raus
+FLEX_OBJC_SOURCES := $(filter-out %FLEXFirebaseTransaction.mm,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %Firebase%,$(FLEX_OBJC_SOURCES))
+
+# System log / symbol rebinding vorerst raus
+FLEX_OBJC_SOURCES := $(filter-out %FLEXSystemLogViewController.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogController.m,$(FLEX_OBJC_SOURCES))
+FLEX_OBJC_SOURCES := $(filter-out %FLEXOSLogMessage.m,$(FLEX_OBJC_SOURCES))
+
+FLEX_SOURCES := $(FLEX_OBJC_SOURCES)
+
+FLEX_SOURCES += $(shell find vendor/fishhook -name "fishhook.c" 2>/dev/null)
+FLEX_INCLUDES += $(shell find vendor/fishhook -type d | sed 's/^/-I/')
 
 # ─────────────────────────────────────────────
 # MARK: - Rootless Tweak Target
@@ -34,9 +50,9 @@ TWEAK_NAME := FlexTool
 FlexTool_FILES := \
     Sources/Tweak.xm \
     Sources/FTCore.m \
-    Sources/FTSceneMonitor.m \
     Sources/FTPreferences.m \
-    Sources/FLEXBridge.m
+    Sources/FLEXBridge.m \
+    $(FLEX_SOURCES)
 
 # FLEX separat mit lockeren Flags
 FlexTool_FILES += $(FLEX_SOURCES)
@@ -53,7 +69,7 @@ FlexTool_CFLAGS := \
     -Wno-error \
     $(FLEX_INCLUDES)
 
-FlexTool_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO
+FlexTool_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO WebKit Security SceneKit AVFoundation UserNotifications
 FlexTool_LDFLAGS := -ObjC -lz -lsqlite3
 FlexTool_LIBRARIES := substrate
 
@@ -66,9 +82,9 @@ LIBRARY_NAME := FlexToolLC
 FlexToolLC_FILES := \
     Sources/LiveContainerEntry.m \
     Sources/FTCore.m \
-    Sources/FTSceneMonitor.m \
     Sources/FTPreferences.m \
-    Sources/FLEXBridge.m
+    Sources/FLEXBridge.m \
+    $(FLEX_SOURCES)
 
 FlexToolLC_FILES += $(FLEX_SOURCES)
 
@@ -83,7 +99,7 @@ FlexToolLC_CFLAGS := \
     -Wno-error \
     $(FLEX_INCLUDES)
 
-FlexToolLC_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO
+FlexToolLC_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO WebKit Security SceneKit AVFoundation UserNotifications
 FlexToolLC_LDFLAGS := -ObjC -lz -lsqlite3
 FlexToolLC_INSTALL_PATH := /usr/lib
 

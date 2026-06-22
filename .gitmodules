@@ -1,3 +1,6 @@
 [submodule "vendor/FLEX"]
 	path = vendor/FLEX
 	url = https://github.com/FLEXTool/FLEX.git
+[submodule "vendor/fishhook"]
+	path = vendor/fishhook
+	url = https://github.com/facebook/fishhook.git

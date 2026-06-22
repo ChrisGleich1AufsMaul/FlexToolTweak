@@ -35,16 +35,6 @@ jobs:
       # ─────────────────────────────────────────
       - name: Set up Theos
         run: |
-          git clone --depth=1 \
-            https://github.com/theos/theos.git \
-            $HOME/theos
-          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
-
-      # ─────────────────────────────────────────
-      # 5. Theos einrichten
-      # ─────────────────────────────────────────
-      - name: Set up Theos
-        run: |
           git clone --recursive --depth=1 \
             https://github.com/theos/theos.git \
             $HOME/theos
@@ -53,6 +43,15 @@ jobs:
           echo "PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
           echo "── dm.pl prüfen ──"
           ls $HOME/theos/vendor/dm.pl/
+
+      # ─────────────────────────────────────────
+      # 5. FLEX Submodul sicherstellen
+      # ─────────────────────────────────────────
+      - name: Ensure FLEX submodule
+        run: |
+          if [ ! -d "vendor/FLEX/Classes" ]; then
+            git submodule update --init --recursive
+          fi
 
       # ─────────────────────────────────────────
       # 6. Theos SDKs herunterladen
@@ -82,7 +81,7 @@ jobs:
           make FlexToolLC \
             THEOS_PACKAGE_SCHEME=rootless \
             ARCHS="arm64 arm64e"
-
+            
       # ─────────────────────────────────────────
       # 9. Artefakte hochladen
       # ─────────────────────────────────────────

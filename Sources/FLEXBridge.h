@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-#import <FLEX/FLEXManager.h>
+#import "FLEXManager.h"
 
 @interface FLEXBridge : NSObject
 + (instancetype)sharedInstance;

@@ -97,9 +97,19 @@ FlexTool_FILES := \
   Sources/FTCore.m \
   Sources/FTPreferences.m \
   Sources/FLEXBridge.m \
-  $(FLEX_OBJC_SOURCES)
+  $(FLEX_SOURCES)
 
-FlexTool_CFLAGS += $(FLEX_INCLUDES)
+FlexTool_CFLAGS := \
+  -fobjc-arc \
+  -Wall \
+  -Wno-error \
+  -Wno-unused-parameter \
+  -Wno-deprecated-declarations \
+  -Wno-sign-compare \
+  -Wno-shorten-64-to-32 \
+  -Wno-unsupported-availability-guard \
+  -Wno-objc-property-no-attribute \
+  $(FLEX_ALL_INCLUDES)
 
 FlexTool_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO WebKit Security SceneKit AVFoundation UserNotifications
 FlexTool_LDFLAGS := -ObjC -lz -lsqlite3
@@ -117,9 +127,19 @@ FlexToolLC_FILES := \
   Sources/FTCore.m \
   Sources/FTPreferences.m \
   Sources/FLEXBridge.m \
-  $(FLEX_OBJC_SOURCES)
+  $(FLEX_SOURCES)
 
-FlexToolLC_CFLAGS += $(FLEX_INCLUDES)
+FlexToolLC_CFLAGS := \
+  -fobjc-arc \
+  -Wall \
+  -Wno-error \
+  -Wno-unused-parameter \
+  -Wno-deprecated-declarations \
+  -Wno-sign-compare \
+  -Wno-shorten-64-to-32 \
+  -Wno-unsupported-availability-guard \
+  -Wno-objc-property-no-attribute \
+  $(FLEX_ALL_INCLUDES)
 
 FlexToolLC_FRAMEWORKS := UIKit Foundation QuartzCore CoreGraphics ImageIO WebKit Security SceneKit AVFoundation UserNotifications
 FlexToolLC_LDFLAGS := -ObjC -lz -lsqlite3

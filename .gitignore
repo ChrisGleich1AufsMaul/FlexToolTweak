@@ -11,4 +11,3 @@ output/
 temp/
 DerivedData/
 .build/
-vendor/
